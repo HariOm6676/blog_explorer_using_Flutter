@@ -1,6 +1,3 @@
-Here’s a beautifully formatted and easy-to-read README file for your project:
-
----
 
 # Blog Explorer
 
