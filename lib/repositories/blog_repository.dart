@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/blog_model.dart';
@@ -20,8 +21,20 @@ class BlogRepository {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       final List<dynamic> blogsJson = jsonResponse['blogs'];
-      return blogsJson.map((json) => Blog.fromJson(json)).toList();
+
+      // Save blogs to Hive
+      final box = Hive.box<Blog>('blogs');
+      final blogs = blogsJson.map((json) => Blog.fromJson(json)).toList();
+      box.clear();
+      box.addAll(blogs);
+
+      return blogs;
     } else {
+      // Load blogs from Hive if network request fails
+      final box = Hive.box<Blog>('blogs');
+      if (box.isNotEmpty) {
+        return box.values.toList();
+      }
       throw Exception('Failed to load blogs');
     }
   }

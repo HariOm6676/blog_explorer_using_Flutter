@@ -1,6 +1,7 @@
-import 'package:blog_explorer/models/blog_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
+import '../models/blog_model.dart';
 import '../repositories/blog_repository.dart';
 import 'blog_event.dart';
 import 'blog_state.dart';
@@ -28,6 +29,11 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
           return blog;
         }).toList();
         emit(BlogLoaded(updatedBlogs));
+
+        // Save updated blogs to Hive
+        final box = Hive.box<Blog>('blogs');
+        box.clear();
+        box.addAll(updatedBlogs);
       }
     });
   }
