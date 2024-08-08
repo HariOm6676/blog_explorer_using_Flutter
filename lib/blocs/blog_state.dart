@@ -28,3 +28,12 @@ class BlogError extends BlogState {
   @override
   List<Object> get props => [message];
 }
+
+class FavoriteBlogsLoaded extends BlogState {
+  final List<Blog> favoriteBlogs;
+
+  FavoriteBlogsLoaded(this.favoriteBlogs);
+
+  @override
+  List<Object> get props => [favoriteBlogs];
+}

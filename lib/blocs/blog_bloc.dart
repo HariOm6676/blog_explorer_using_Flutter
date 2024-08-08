@@ -1,3 +1,4 @@
+import 'package:blog_explorer/models/blog_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../repositories/blog_repository.dart';
@@ -15,6 +16,18 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
         emit(BlogLoaded(blogs));
       } catch (e) {
         emit(BlogError("Failed to fetch blogs"));
+      }
+    });
+
+    on<ToggleFavoriteStatus>((event, emit) {
+      if (state is BlogLoaded) {
+        final List<Blog> updatedBlogs = (state as BlogLoaded).blogs.map((blog) {
+          if (blog.id == event.blogId) {
+            blog.isFavorite = !blog.isFavorite;
+          }
+          return blog;
+        }).toList();
+        emit(BlogLoaded(updatedBlogs));
       }
     });
   }
